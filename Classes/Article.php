@@ -53,7 +53,7 @@
 				if( mysql_num_rows($query_result) ){
 					return mysql_fetch_array($query_result);		  
 				}else{
-					return 0;				
+					return false;				
 				}						 
 		 }
 		  
@@ -70,74 +70,92 @@
 		 		mysql_close($conn);
 		 		
 		 		$totalRows=0;
-
+		 		
 		    	while ( $row = mysql_fetch_array($query_result) ) {
 		      	$article = new Article( $row );
 		      	$list[] = $article;
 		      	
 		      	$totalRows++;
 		    	}
-		 
-		    	return ( array ( "results" => $list, "totalRows" => $totalRows ) );
+		 		if($totalRows){
+		    		return ( array ( "results" => $list, "totalRows" => $totalRows ) );
+				}else{
+					return false;
+				}								  
 		  }
 		 
 		 
-		  
+		  /**
+		  	*Inserting Article into DB
+		  	*/ 
 		 
-		  /*public function insert() {
+		  public function insert() {
 		 
 		    	// Does the Article object already have an ID?
-		     	if ( !is_null( $this->id ) ) trigger_error ( "Article::insert(): Attempt to insert an Article object that already has its ID property set (to $this->id).", E_USER_ERROR );
-		 
+		     	if ( !is_null( $this->Article_Id ) ) {
+		     		trigger_error ( "Article::insert(): Attempt to insert an Article object that already has its ID property set (to $this->Article_Id).", E_USER_ERROR );
+				}		 
+		 		
 		    	// Insert the Article
-		    	$conn = new PDO( DB_DSN, DB_USERNAME, DB_PASSWORD );
-		    	$sql = "INSERT INTO Articles ( Article_PublicationDate, 
-		    	Article_Title, 
-		    	Article_Summary, 
-		    	Article_Content ) 
-		    	VALUES ( FROM_UNIXTIME(:publicationDate), :title, :summary, :content )";
-		    	$st = $conn->prepare ( $sql );
-		    	$st->bindValue( ":publicationDate", $this->publicationDate, PDO::PARAM_INT );
-		    	$st->bindValue( ":title", $this->title, PDO::PARAM_STR );
-		    	$st->bindValue( ":summary", $this->summary, PDO::PARAM_STR );
-		    	$st->bindValue( ":content", $this->content, PDO::PARAM_STR );
-		    	$st->execute();
-		    	$this->id = $conn->lastInsertId();
-		    	$conn = null;
+		    	$conn =  mysql_connect( DB_HOST, ADMIN_USERNAME, ADMIN_PASSWORD ) or die('Not Connected : ' . mysql_error($conn) );
+		  		$db_selected = mysql_select_db(DB_NAME,$conn) or die('Cant Select DB : '. mysql_error($conn));
+		    	$sql = "INSERT INTO Articles ( Article_PublicationDate, Article_Title, Article_Summary, Article_Content ) 
+		    	VALUES ( '$this->Article_PublicationDate' , '$this->Article_Title', '$this->Article_Summary', '$this->Article_Content' )";
+		    	
+		    	
+		    	$query_result= mysql_query( $sql,$conn) or die('Query Error : '. mysql_error($conn));		 		
+		 		
+		 		mysql_close($conn);
+		 		
+		 		return $query_result;
 		  }
 		 
 		
-		 
+		/**
+		*	Update Article in MYsql DB
+		*/ 
 		  public function update() {
 		 
 		    	// Does the Article object have an ID?
-		    	if ( is_null( $this->id ) ) trigger_error ( "Article::update(): Attempt to update an Article object that does not have its ID property set.", E_USER_ERROR );
-		    
+		    	if ( is_null( $this->Article_Id ) ) {
+		    			trigger_error ( "Article::update(): Attempt to update an Article object that does not have its ID property set.", E_USER_ERROR );
+		    	}
+		    	
 		    	// Update the Article
-		    	$conn = new PDO( DB_DSN, DB_USERNAME, DB_PASSWORD );
-		    	$sql = "UPDATE Articles SET Article_PublicationDate=FROM_UNIXTIME(:publicationDate), title=:title, summary=:summary, content=:content WHERE Article_Id = :id";
-		    	$st = $conn->prepare ( $sql );
-		    	$st->bindValue( ":publicationDate", $this->publicationDate, PDO::PARAM_INT );
-		    	$st->bindValue( ":title", $this->title, PDO::PARAM_STR );
-		    	$st->bindValue( ":summary", $this->summary, PDO::PARAM_STR );
-		    	$st->bindValue( ":content", $this->content, PDO::PARAM_STR );
-		    	$st->bindValue( ":id", $this->id, PDO::PARAM_INT );
-		    	$st->execute();
-		    	$conn = null;
+		    	$conn =  mysql_connect( DB_HOST, ADMIN_USERNAME, ADMIN_PASSWORD ) or die('Not Connected : ' . mysql_error($conn) );
+		    	$db_selected = mysql_select_db(DB_NAME,$conn) or die('Cant Select DB : '. mysql_error($conn));
+		    	
+		    	$sql = "UPDATE Articles SET 
+		    	 Article_PublicationDate = '$this->Article_PublicationDate' ,
+		    	 Article_Title = '$this->Article_Title' , 
+		    	 Article_Summary = '$this->Article_Summary' , 
+		    	 Article_Content = '$this->Article_Content' 
+		    	  WHERE Article_Id = '$this->Article_Id' ";
+		    	 
+		    	$query_result= mysql_query( $sql,$conn) or die('Query Error : '. mysql_error($conn));		 		
+		 		mysql_close($conn);
+		 		
+		 		return $query_result;
 		  }
 		 
-		 
+		 /**
+		 * Delete Article 
+		 */
 		  public function delete() {
 		 
 		    	// Does the Article object have an ID?
-		    	if ( is_null( $this->id ) ) trigger_error ( "Article::delete(): Attempt to delete an Article object that does not have its ID property set.", E_USER_ERROR );
-		 
+		    	if ( is_null( $this->Article_Id ) ) {
+		    		trigger_error ( "Article::delete(): Attempt to delete an Article object that does not have its ID property set.", E_USER_ERROR );
+				}		 
 		    	// Delete the Article
-		    	$conn = new PDO( DB_DSN, DB_USERNAME, DB_PASSWORD );
-		    	$st = $conn->prepare ( "DELETE FROM Articles WHERE Article_Id = :id LIMIT 1" );
-		    	$st->bindValue( ":id", $this->id, PDO::PARAM_INT );
-		    	$st->execute();
-		    	$conn = null;
-		  }			*/
+		    	$conn =  mysql_connect( DB_HOST, ADMIN_USERNAME, ADMIN_PASSWORD ) or die('Not Connected : ' . mysql_error($conn) );
+		    	$db_selected = mysql_select_db(DB_NAME,$conn) or die('Cant Select DB : '. mysql_error($conn));
+		    	
+		    	
+		    	$sql= "DELETE FROM Articles WHERE Article_Id = '$this->Article_Id' LIMIT 1" ;
+		    	$query_result= mysql_query( $sql,$conn) or die('Query Error : '. mysql_error($conn));		 		
+		 		mysql_close($conn);
+		 		return $query_result;
+		  }			
 	}	
 ?>
