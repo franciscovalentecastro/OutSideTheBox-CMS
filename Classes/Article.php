@@ -6,34 +6,33 @@
 	class Article{
 		//Properties
 		
-		public $id=null;
+		public $Article_Id=null;
 		
-		public $publicationDate=null;
+		public $Article_PublicationDate=null;
 		
-		public $title=null;
+		public $Article_Title=null;
 		
-		public $summary=null;
+		public $Article_Summary=null;
 		
-		public $content=null;
+		public $Article_Content=null;
 		
 		//Metodos
 		
-		public function __constuct( $data=array() ){
+		public function __construct( $data=array() ){			
 			
-			 if( isset( $data['id'] ) ) {  $this->id = (int) $data['id'];   }
-			 if( isset( $data['publicationDate'] ) ){ $this->publicationDate = (int) $data['publicationDate'];  }
-			 if( isset( $data['title'] ) )   { $this->title = preg_replace ( "/[^\.\,\-\_\'\"\@\?\!\:\$ a-zA-Z0-9()]/", "", $data['title'] ); }
-			 if( isset( $data['summary'] ) ) { $this->summary = preg_replace ( "/[^\.\,\-\_\'\"\@\?\!\:\$ a-zA-Z0-9()]/", "", $data['summary'] ); }
-			 if( isset( $data['content'] ) ) { $this->content = $data['content']; } 	
+			 if( isset( $data['Article_Id'] ) ) {  $this->Article_Id = (int) $data['Article_Id'];   }
+			 if( isset( $data['Article_PublicationDate'] ) ){ $this->Article_PublicationDate = (string) $data['Article_PublicationDate'];  }
+			 if( isset( $data['Article_Title'] ) )   { $this->Article_Title = preg_replace ( "/[^\.\,\-\_\'\"\@\?\!\:\$ a-zA-Z0-9()]/", "", $data['Article_Title'] ); }
+			 if( isset( $data['Article_Summary'] ) ) { $this->Article_Summary = preg_replace ( "/[^\.\,\-\_\'\"\@\?\!\:\$ a-zA-Z0-9()]/", "", $data['Article_Summary'] ); }
+			 if( isset( $data['Article_Content'] ) ) { $this->Article_Content = $data['Article_Content']; } 	
 			 				
 		}	
 		
 			
-		public function storeFormValues ( $params ) {
+		public function storeFormValues ( $params = array() ) {
  
 		    // Store all the parameters
 		    $this->__construct( $params );
-		
 
 		}
 		
@@ -58,34 +57,34 @@
 				}						 
 		 }
 		  
+		  /**
+		  *Regresa todos los Articulos
+		  */
 		  
 		  
-		  /*public static function getList( $numRows=1000000, $order="Article_PublicationDate DESC" ) {
-		    	$conn = new PDO( DB_DSN, DB_USERNAME, DB_PASSWORD );
-		    	$sql = "SELECT SQL_CALC_FOUND_ROWS *, UNIX_TIMESTAMP( Article_PublicationDate ) AS Article_PublicationDate FROM Articles
-		            ORDER BY " . mysql_escape_string($order) . " LIMIT :numRows";
-		 
-		      $st = $conn->prepare( $sql );
-		    	$st->bindValue( ":numRows", $numRows, PDO::PARAM_INT );
-		    	$st->execute();
-		    	$list = array();
-		 
-		    	while ( $row = $st->fetch() ) {
+		  public static function getList( $numRows=1000000, $order="Article_PublicationDate DESC" ) {
+		    	$conn = mysql_connect( DB_HOST, DB_USERNAME, DB_PASSWORD ) or die('Not Connected : ' . mysql_error($conn) );
+		    	$sql = "SELECT * FROM Articles ORDER BY $order LIMIT $numRows";
+		 		$db_selected = mysql_select_db(DB_NAME,$conn) or die('Cant Select DB : '. mysql_error($conn));		
+				$query_result= mysql_query( $sql,$conn) or die('Query Error : '. mysql_error($conn));
+		 		mysql_close($conn);
+		 		
+		 		$totalRows=0;
+
+		    	while ( $row = mysql_fetch_array($query_result) ) {
 		      	$article = new Article( $row );
 		      	$list[] = $article;
+		      	
+		      	$totalRows++;
 		    	}
 		 
-		    	// Now get the total number of articles that matched the criteria
-		    	$sql = "SELECT FOUND_ROWS() AS totalRows";
-		    	$totalRows = $conn->query( $sql )->fetch();
-		    	$conn = null;
-		    	return ( array ( "results" => $list, "totalRows" => $totalRows[0] ) );
+		    	return ( array ( "results" => $list, "totalRows" => $totalRows ) );
 		  }
 		 
 		 
 		  
 		 
-		  public function insert() {
+		  /*public function insert() {
 		 
 		    	// Does the Article object already have an ID?
 		     	if ( !is_null( $this->id ) ) trigger_error ( "Article::insert(): Attempt to insert an Article object that already has its ID property set (to $this->id).", E_USER_ERROR );
