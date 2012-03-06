@@ -25,7 +25,7 @@
 			 if( isset( $data['title'] ) )   { $this->title = preg_replace ( "/[^\.\,\-\_\'\"\@\?\!\:\$ a-zA-Z0-9()]/", "", $data['title'] ); }
 			 if( isset( $data['summary'] ) ) { $this->summary = preg_replace ( "/[^\.\,\-\_\'\"\@\?\!\:\$ a-zA-Z0-9()]/", "", $data['summary'] ); }
 			 if( isset( $data['content'] ) ) { $this->content = $data['content']; } 	
-							
+			 				
 		}	
 		
 			
@@ -33,33 +33,34 @@
  
 		    // Store all the parameters
 		    $this->__construct( $params );
-		 
-		    // Parse and store the publication date
-		    if ( isset($params['publicationDate']) ) {
-		      	$publicationDate = explode ( '-', $params['publicationDate'] );
-		 
-		      	if ( count($publicationDate) == 3 ) {
-		        		list ( $y, $m, $d ) = $publicationDate;
-		        		$this->publicationDate = mktime ( 0, 0, 0, $m, $d, $y );
-		      	}
-		    }
-		}
+		
 
+		}
+		
+		/**
+		*	Regresa un articulo basandose en su id
+		*/
 		 
-		  public static function getById( $id ) {
-		    	$conn = new PDO( DB_DSN, DB_USERNAME, DB_PASSWORD );
-		    	$sql = "SELECT *, UNIX_TIMESTAMP(publicationDate) AS publicationDate FROM articles WHERE id = :id";
-		    	$st = $conn->prepare( $sql );
-		    	$st->bindValue( ":id", $id, PDO::PARAM_INT );
-		    	$st->execute();
-		    	$row = $st->fetch();
-		    	$conn = null;
-		    	if ( $row ) { return new Article( $row ); }
-		  }
+		public static function getById( $id ) { // Get Article BY Id				
+								
+				$sql = "SELECT * FROM Articles WHERE Article_Id = $id ";
+		    	$conn = mysql_connect( DB_HOST, DB_USERNAME, DB_PASSWORD ) or die('Not Connected : ' . mysql_error($conn) );
+		    	$db_selected = mysql_select_db(DB_NAME,$conn) or die('Cant Select DB : '. mysql_error($conn));
+				
+				$query_result= mysql_query( $sql,$conn) or die('Query Error : '. mysql_error($conn));
+						    	
+		    	mysql_close($conn);
+			
+				if( mysql_num_rows($query_result) ){
+					return mysql_fetch_array($query_result);		  
+				}else{
+					return 0;				
+				}						 
+		 }
 		  
 		  
 		  
-		  public static function getList( $numRows=1000000, $order="Article_PublicationDate DESC" ) {
+		  /*public static function getList( $numRows=1000000, $order="Article_PublicationDate DESC" ) {
 		    	$conn = new PDO( DB_DSN, DB_USERNAME, DB_PASSWORD );
 		    	$sql = "SELECT SQL_CALC_FOUND_ROWS *, UNIX_TIMESTAMP( Article_PublicationDate ) AS Article_PublicationDate FROM Articles
 		            ORDER BY " . mysql_escape_string($order) . " LIMIT :numRows";
@@ -138,6 +139,6 @@
 		    	$st->bindValue( ":id", $this->id, PDO::PARAM_INT );
 		    	$st->execute();
 		    	$conn = null;
-		  }			
+		  }			*/
 	}	
 ?>
