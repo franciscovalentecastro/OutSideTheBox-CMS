@@ -80,7 +80,7 @@
 		 		if($totalRows){
 		    		return ( array ( "results" => $list, "totalRows" => $totalRows ) );
 				}else{
-					return false;
+					return  array("results" => array(), "totalRows" => $totalRows  );
 				}								  
 		  }
 		 
