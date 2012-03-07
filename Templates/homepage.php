@@ -5,13 +5,15 @@
 <?php foreach ( $results['articles'] as $article ) { ?>
  
         <li>
-          <h3>
-            <span > <?php echo $article->Article_PublicationDate?> </span>
-            	<a href=".?action=viewArticle&amp;articleId=<?php echo $article->Article_Id?>">
-	            	<?php echo $article->Article_Title ?>
-            	</a>
-          </h3>
-          <p> <?php echo $article->Article_Summary ?> </p>
+           	<div class="list-option">
+          		<h3>
+            		<span class="list-date" > <?php echo $article->Article_PublicationDate?> </span>
+            			<a href=".?action=viewArticle&articleId=<?php echo $article->Article_Id?>" class="list-title">
+	            			<?php echo $article->Article_Title ?>
+            			</a>
+          		</h3>
+          		<p> <?php echo $article->Article_Summary ?> </p>
+				</div>    
         </li>
  
 <?php } ?>

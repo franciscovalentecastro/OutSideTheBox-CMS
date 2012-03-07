@@ -1,6 +1,6 @@
 			</div>		
 		<div id="footer">
-			OutSide The Box &copy; 2011. All rights reserved. <a href="admin.php">Site Admin</a>
+			<p> OutSide The Box 2011. <a href="admin.php">Site Admin</a> </p>
 		</div>
 		
 	</body>
