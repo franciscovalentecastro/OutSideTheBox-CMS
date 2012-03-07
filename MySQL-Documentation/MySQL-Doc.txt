@@ -1,4 +1,4 @@
-Database Name - OSTB-CMS
+﻿Database Name - OSTB-CMS
 
 User List
 	ostb-user: Read Only
@@ -11,4 +11,8 @@ Table List
 	 2	Article_PublicationDate	 date			                     No	Ninguna		                    
 	 3	Article_Title	          varchar(255)	                  utf8_unicode_ci		
 	 4	Article_Summary	       text	utf8_unicode_ci		      No	Ninguna		  
-	 5	Article_Content	       mediumtext	utf8_unicode_ci		No	Ninguna		  
+	 5	Article_Content	       mediumtext	utf8_unicode_ci		No Ninguna		
+
+
+
+The Database file with all the tables and configurations is names OSTB-CMS.sql  
