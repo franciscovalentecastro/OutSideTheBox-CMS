@@ -20,8 +20,8 @@
 		  $data = Article::getList();
 		  $results['articles'] = $data['results'];
 		  $results['totalRows'] = $data['totalRows'];
-		  $results['pageTitle'] = "Article Archive | Widget News";
-		  //require( TEMPLATE_PATH . "/archive.php" );
+		  $results['pageTitle'] = "Article Archive | OutSideTheBox";
+		  require( TEMPLATE_PATH . "/archive.php" );
 		}
 		 
 		function viewArticle() {
@@ -32,8 +32,8 @@
 		 
 		  $results = array();
 		  $results['article'] = Article::getById( (int)$_GET["articleId"] );
-		  $results['pageTitle'] = $results['article']->title . " | Widget News";
-		  //require( TEMPLATE_PATH . "/viewArticle.php" );
+		  $results['pageTitle'] = $results['article']->Article_Title . " | OutSideTheBox";
+		  require( TEMPLATE_PATH . "/viewArticle.php" );
 		}
 		 
 		function homepage() {

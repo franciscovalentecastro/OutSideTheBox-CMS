@@ -48,10 +48,10 @@
 				
 				$query_result= mysql_query( $sql,$conn) or die('Query Error : '. mysql_error($conn));
 						    	
-		    	mysql_close($conn);
+		    	mysql_close($conn);		
 			
 				if( mysql_num_rows($query_result) ){
-					return mysql_fetch_array($query_result);		  
+					return new Article( mysql_fetch_array($query_result) );		  
 				}else{
 					return false;				
 				}						 

@@ -1,4 +1,4 @@
-<?php include "include/header.php" ?>
+<?php include TEMPLATE_PATH."/include/header.php" ?>
  
       <ul id="headlines">
  
@@ -20,4 +20,4 @@
  
       <p> <a href="./?action=archive">Article Archive</a> </p>
  
-<?php include "include/footer.php" ?>
+<?php include TEMPLATE_PATH."/include/footer.php" ?>
